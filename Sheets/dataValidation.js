@@ -20,7 +20,7 @@ function dataVal(destSheetName, destSheetRange, sourceSheetName, sourceSheetRang
 	destinationRange.setDataValidations(rules);
 }
 
-//Run the function when the sheet it opened
+//Run the function when the sheet is opened
 function onOpen() {
 	var sourceSheet = "Enums" //Enter name of sheet that has the criteria for data validation
 	var destinationSheet1 = "My Worksheet" // Enter the name of the sheet to apply the data validation
