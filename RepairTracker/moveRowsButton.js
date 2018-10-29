@@ -2,26 +2,33 @@ function moveRowsButton() {
 	var ss = SpreadsheetApp.getActiveSpreadsheet();
 	var currentSheet = SpreadsheetApp.getActiveSheet();
 	var currentSheetName = currentSheet.getName();
+	
+//Get the sheets by name and set to variables
 	var subSheet = ss.getSheetByName("Submitted");
-	var ripSheet = ss.getSheetByName("Repair In Progress");
+	var inProgressSheet = ss.getSheetByName("Repair In Progress");
 	var completedSheet = ss.getSheetByName("Repair Complete");
 	var closedSheet = ss.getSheetByName("Repair Closed");
 	var holdSheet = ss.getSheetByName("Hold");
 	var claimSubmittedSheet = ss.getSheetByName("Claim Submitted");
-	var status_column = "K";
+	
+//This should be the column that has the status of the repair
+	var columnToCheck = "K";
+	
 	var rowsToCheck = currentSheet.getLastRow();
 	var destSheet;
 	var destSheetName;
 
+// Loop through rows that contain data
 	for(var i=1;i<=rowsToCheck;i++){
-	var currentRange = currentSheet.getRange(status_column+i);
+	var currentRange = currentSheet.getRange(columnToCheck+i);
 	var currentRow = currentRange.getRow();
-	var currentValue = currentRange.getValue();
+	var repairStatusValue = currentRange.getValue();
 	
-		switch(currentValue){
+// Use repair status value of cell to determine destination sheet
+		switch(repairStatusValue){
 			case "Picked Up":
 			case "Repair In Progress":
-				destSheet = ripSheet;
+				destSheet = inProgressSheet;
 				destSheetName = "Repair In Progress";
 				break;
 			case "Claim Submitted":
@@ -43,12 +50,13 @@ function moveRowsButton() {
 			default:
 				destSheetName = "none";
 		}
-	
+// Copy the row if the destination sheet does not equal the current sheet or an invalid sheet.
+// Remove the row from source sheet after copied
 		if (destSheetName != currentSheetName && destSheetName != "none") {
-			var lastRow = destSheet.getLastRow();
+			var destinationSheetLastRow = destSheet.getLastRow();
 			var targetRange = destSheet.getRange(destSheet.getLastRow() + 1, 1);
 			
-		if (lastRow) destSheet.insertRowAfter(lastRow);
+		if (destinationSheetLastRow) destSheet.insertRowAfter(destinationSheetLastRow);
 			currentSheet.getRange(currentRow, 1, 1, currentSheet.getLastColumn()).copyTo(targetRange);
 			currentSheet.deleteRow(currentRow);
 			i--;
